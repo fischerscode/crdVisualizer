@@ -81,9 +81,24 @@ class CustomResourceDefinitionProperty {
   final String name;
   final String type;
   final String? description;
+  final String? format;
 
-  CustomResourceDefinitionProperty(
-      {required this.name, required this.type, this.description});
+  CustomResourceDefinitionProperty({
+    required this.name,
+    required this.type,
+    this.description,
+    this.format,
+  });
+
+  static List<String>? _readEnum(YamlNode? node) {
+    return node
+        ?.asList()
+        ?.nodes
+        .map((element) => element.asString())
+        .where((element) => element != null)
+        .map((e) => e!)
+        .toList();
+  }
 
   static CustomResourceDefinitionProperty? load(
       String name, YamlNode? definition) {
@@ -92,11 +107,17 @@ class CustomResourceDefinitionProperty {
     String? type = definition.getMapValue("type")?.asString();
     if (type == null) return null;
     String? description = definition.getMapValue("description")?.asString();
+    String? format = definition.getMapValue("format")?.asString();
+    List<String>? enums = _readEnum(definition.getMapValue("enum"));
 
     switch (type.toLowerCase()) {
       case "array":
         String? itemsType =
             definition.getMapValue("items")?.getMapValue("type")?.asString();
+        String? itemsDescription = definition
+            .getMapValue("items")
+            ?.getMapValue("description")
+            ?.asString();
         if (itemsType == null) return null;
         if (itemsType.toLowerCase() == "object") {
           return CustomResourceDefinitionObjectArrayProperty(
@@ -104,10 +125,7 @@ class CustomResourceDefinitionProperty {
             description: description,
             itemsProperty: CustomResourceDefinitionObjectProperty(
                 name: "",
-                description: definition
-                    .getMapValue("items")
-                    ?.getMapValue("description")
-                    ?.asString(),
+                description: itemsDescription,
                 properties: (definition
                                 .getMapValue("items")
                                 ?.getMapValue("properties") ??
@@ -119,8 +137,22 @@ class CustomResourceDefinitionProperty {
                     []),
           );
         }
+        List<String>? enums =
+            _readEnum(definition.getMapValue("items")?.getMapValue("enum"));
+        print(enums);
+        if (enums != null) {
+          return CustomResourceDefinitionEnumArrayProperty(
+            name: name,
+            itemsType: itemsType,
+            description: "${description ?? ""}\n\n${itemsDescription ?? ""}",
+            enums: enums,
+          );
+        }
         return CustomResourceDefinitionArrayProperty(
-            name: name, type: type, itemsType: itemsType);
+            name: name,
+            type: type,
+            itemsType: itemsType,
+            description: description);
       case "object":
         return CustomResourceDefinitionObjectProperty(
             name: name,
@@ -131,10 +163,29 @@ class CustomResourceDefinitionProperty {
                     ?.asPropertyList() ??
                 []);
       default:
+        if (enums != null) {
+          return CustomResourceDefinitionEnumProperty(
+              name: name, type: type, description: description, enums: enums);
+        }
         return CustomResourceDefinitionProperty(
-            name: name, type: type, description: description);
+            name: name, type: type, description: description, format: format);
     }
   }
+}
+
+class CustomResourceDefinitionEnumProperty
+    extends CustomResourceDefinitionProperty {
+  CustomResourceDefinitionEnumProperty({
+    required final String name,
+    final String? description,
+    required final String type,
+    required this.enums,
+  }) : super(
+          name: name,
+          description: description,
+          type: type,
+        );
+  final List<String> enums;
 }
 
 class CustomResourceDefinitionObjectProperty
@@ -164,6 +215,23 @@ class CustomResourceDefinitionArrayProperty
           name: name,
           type: type,
           description: description,
+        );
+}
+
+class CustomResourceDefinitionEnumArrayProperty
+    extends CustomResourceDefinitionArrayProperty
+    implements CustomResourceDefinitionEnumProperty {
+  final List<String> enums;
+  CustomResourceDefinitionEnumArrayProperty({
+    required final String name,
+    final String? description,
+    required String itemsType,
+    required this.enums,
+  }) : super(
+          name: name,
+          type: "enum-array",
+          description: description,
+          itemsType: itemsType,
         );
 }
 

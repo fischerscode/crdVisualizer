@@ -1035,12 +1035,37 @@ class CRDViewer extends StatelessWidget {
         }
 
       default:
-        return ListTile(
-          title: Text(property.name),
-          subtitle:
-              property.description != null ? Text(property.description!) : null,
-          trailing: Text(property.type),
-        );
+        String type = property.type;
+        if (property.format != null) type = "$type as ${property.format}";
+        if (property is CustomResourceDefinitionEnumProperty) {
+          return InsertedExpansionTile(
+            initiallyExpanded: initiallyExpanded,
+            title: Text(property.name),
+            subtitle: property.description != null
+                ? Text(property.description!)
+                : null,
+            trailing: Text("$type - enum"),
+            children: property.enums
+                .map(
+                  (e) => Align(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text("- $e"),
+                    ),
+                    alignment: Alignment.centerLeft,
+                  ),
+                )
+                .toList(),
+          );
+        } else {
+          return ListTile(
+            title: Text(property.name),
+            subtitle: property.description != null
+                ? Text(property.description!)
+                : null,
+            trailing: Text(type),
+          );
+        }
     }
   }
 

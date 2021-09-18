@@ -16,4 +16,4 @@ A new page should open and show you the most important information for creating 
 
 ## Limitations
 - Currently only `apiextensions.k8s.io/v1` is supported.
-- not implemented/shown: `enum`, `anyOf`, `x-kubernetes-int-or-string`, `required`, `served`, `storage`, `status`, `listKind`, `plural`, `singular`, `scope`
+- not implemented/shown: `additionalProperties` with `type: array`, `anyOf`, `x-kubernetes-int-or-string`, `required`, `served`, `storage`, `listKind`, `plural`, `singular`, `scope`
