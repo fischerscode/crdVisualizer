@@ -1,16 +1,19 @@
-# crdvisualizer
+[![](https://img.shields.io/badge/GitHub%20pages-deployed-blue)](https://fischerscode.github.io/crdVisualizer/)
+# crdVisualizer
 
-A new Flutter project.
+A tool for browsing complicated kubernetes CustomResourceDefinitions. 
+
+## About
+
+I've been sick of searching the deploy files of kubernetes CustomResourceDefinitions while creating CustomResources. As I could not find a GUI or visualization tool, I've decided to create my own.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+[Click here](https://fischerscode.github.io/crdVisualizer/) to give it a try.
 
-A few resources to get you started if this is your first Flutter project:
+Using it should be pretty simple. Just paste your yaml file in there and click "LOAD" at the bottom.
+A new page should open and show you the most important information for creating a CustomResource. Inserting multiple yaml documents separated by `---` works, too.
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Limitations
+- Currently only `apiextensions.k8s.io/v1` is supported.
+- not implemented/shown: `enum`, `anyOf`, `x-kubernetes-int-or-string`, `required`, `served`, `storage`, `status`, `listKind`, `plural`, `singular`, `scope`
