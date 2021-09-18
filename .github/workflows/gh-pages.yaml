@@ -31,7 +31,7 @@ jobs:
           target: "flutterwebtools"
 
       - run: |
-          chmod +x flutterwebtools
+          chmod +x ./flutterwebtools
           cd release
           flutter build web --release
           ../flutterwebtools -B
