@@ -24,13 +24,8 @@ jobs:
         with:
           channel: "stable"
 
-      - uses: dsaltares/fetch-gh-release-asset@master
-        with:
-          repo: "fischerscode/FlutterWebTools"
-          file: "flutterwebtools-linux"
-          target: "flutterwebtools"
-
       - run: |
+          wget -O flutterwebtools https://github.com/fischerscode/FlutterWebTools/releases/download/v1.0/flutterwebtools-linux
           chmod +x ./flutterwebtools
           cd release
           flutter build web --release
