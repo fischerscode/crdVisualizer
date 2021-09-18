@@ -45,4 +45,4 @@ jobs:
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
           repository: gh-pages
-          commit_message: "Build web from ${{ GITHUB_REF }}"
+          commit_message: "Build web from ${{ env.GITHUB_REF }}"
