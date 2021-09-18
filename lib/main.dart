@@ -980,13 +980,13 @@ class CRDViewer extends StatelessWidget {
       return Provider.value(
         value: InsertionCounter(0),
         child: InsertedExpansionTile(
-          title: Text(customResourceDefinition.kind),
-          subtitle: Text(customResourceDefinition.group),
+          title: SelectableText(customResourceDefinition.kind),
+          subtitle: SelectableText(customResourceDefinition.group),
           initiallyExpanded: initiallyExpanded,
           children: customResourceDefinition.versions
               .map(
                 (version) => InsertedExpansionTile(
-                  title: Text(version.name),
+                  title: SelectableText(version.name),
                   initiallyExpanded: initiallyExpanded,
                   children: buildPropertyList(version.properties),
                 ),
@@ -1006,9 +1006,10 @@ class CRDViewer extends StatelessWidget {
       case "object":
         return InsertedExpansionTile(
           initiallyExpanded: initiallyExpanded,
-          title: Text(property.name),
-          subtitle:
-              property.description != null ? Text(property.description!) : null,
+          title: SelectableText(property.name),
+          subtitle: property.description != null
+              ? SelectableText(property.description!)
+              : null,
           children: buildPropertyList(
               (property as CustomResourceDefinitionObjectProperty).properties),
         );
@@ -1017,18 +1018,18 @@ class CRDViewer extends StatelessWidget {
         if (property is CustomResourceDefinitionObjectArrayProperty) {
           return InsertedExpansionTile(
             initiallyExpanded: initiallyExpanded,
-            title: Text(property.name),
+            title: SelectableText(property.name),
             subtitle: property.description != null
-                ? Text(property.description!)
+                ? SelectableText(property.description!)
                 : null,
             children: [buildProperty(property.itemsProperty)],
             trailing: Text("array"),
           );
         } else {
           return ListTile(
-            title: Text(property.name),
+            title: SelectableText(property.name),
             subtitle: property.description != null
-                ? Text(property.description!)
+                ? SelectableText(property.description!)
                 : null,
             trailing: Text("${property.itemsType}-${property.type}"),
           );
@@ -1040,9 +1041,9 @@ class CRDViewer extends StatelessWidget {
         if (property is CustomResourceDefinitionEnumProperty) {
           return InsertedExpansionTile(
             initiallyExpanded: initiallyExpanded,
-            title: Text(property.name),
+            title: SelectableText(property.name),
             subtitle: property.description != null
-                ? Text(property.description!)
+                ? SelectableText(property.description!)
                 : null,
             trailing: Text("$type - enum"),
             children: property.enums
@@ -1050,7 +1051,7 @@ class CRDViewer extends StatelessWidget {
                   (e) => Align(
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Text("- $e"),
+                      child: SelectableText("- $e"),
                     ),
                     alignment: Alignment.centerLeft,
                   ),
@@ -1059,9 +1060,9 @@ class CRDViewer extends StatelessWidget {
           );
         } else {
           return ListTile(
-            title: Text(property.name),
+            title: SelectableText(property.name),
             subtitle: property.description != null
-                ? Text(property.description!)
+                ? SelectableText(property.description!)
                 : null,
             trailing: Text(type),
           );
